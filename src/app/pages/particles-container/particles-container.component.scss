@@ -1,0 +1,127 @@
+//:host canvas{
+//  background-color: red !important;
+//  width: 80% !important;
+//}
+//.particle-container{
+//  border: 1px red solid;
+//  width: 300px;
+//  height: 450px;
+//}
+//
+//:host ::ng-deep #particles{
+//  background: red;
+//  width: 400px !important;
+//  height: 300px !important;
+//  canvas{
+//    background: aqua;
+//    width: 100px !important;
+//    height: 30px;
+//  }
+//}
+
+
+:host ::ng-deep #particles {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.particles {
+  //border: 0.5px solid aqua;
+  width: 96%;
+  height: 30rem;
+}
+
+.particles-container {
+  //border: 0.5px solid blue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+.profile-photo-container{
+  //background-color: rgba(75, 138, 157, 0.77);
+  width: 100%;
+  height: 10rem;
+  z-index: 1;
+  position: absolute;
+  top: 25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.profile-photo-border{
+  width: 11rem;
+  height: 11rem;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 0.15rem solid white;
+  transition: transform .2s;
+}
+.profile-photo{
+  background-color: white;
+  width: 10rem;
+  height: 10rem;
+  border-radius: 100%;
+  img{
+    width: 10rem;
+    height: 10rem;
+    border-radius: 100%;
+  }
+}
+.profile-photo-container:hover{
+  .profile-photo-border{
+    border-color: #F50D32;
+    transform: scale(1.1);
+  }
+}
+
+
+.title-container{
+  margin-top: 6rem;
+  //background-color: rgb(245, 102, 13);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  flex-direction: column;
+  .name{
+    font-family: "Nunito Sans Black";
+    font-size: xx-large;
+  }
+  .developer{
+    font-family: "Nunito Sans";
+    font-style: italic;
+    font-size: x-large;
+  }
+}
+.social-container{
+  margin-top: 3rem;
+  //background: red;
+  display: flex;
+  gap: 2rem;
+  img{
+    cursor: pointer;
+    width: 2rem;
+  }
+  img:hover{
+    transform: scale(1.1);
+  }
+}
+
+
+
+/* Use a media query to add a breakpoint at 768: */
+@media screen and (max-width: 768px) {
+  .particles {
+    height: 20rem;
+  }
+  .profile-photo-container{
+    top: 15rem;
+  }
+}
