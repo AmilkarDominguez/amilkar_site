@@ -4,7 +4,7 @@ import { HomeComponent } from "./pages/home/home.component";
 import {ParticlesContainerComponent} from "./pages/particles-container/particles-container.component";
 
 const routes: Routes = [
-  { path: '', component: ParticlesContainerComponent, pathMatch: 'full' },
+  { path: '', component: HomeComponent, pathMatch: 'full' },
 ];
 
 @NgModule({
