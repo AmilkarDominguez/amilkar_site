@@ -1,4 +1,10 @@
-# AmilkarSite
+# Amilkar Site
+
+build to docs
+```
+ng build --output-path=docs
+```
+
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.3.
 
