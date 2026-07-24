@@ -7,6 +7,7 @@ import ProjectGrid from '~/components/projects/ProjectGrid.astro';
 import PostList from '~/components/posts/PostList.astro';
 import TerminalLoader from '~/components/effects/TerminalLoader.astro';
 import GlitchText from '~/components/effects/GlitchText.astro';
+import SocialLinks from '~/components/layout/SocialLinks.astro';
 
 const featuredProjects = await getCollection('projects', ({ data }) =>
   data.featured && (import.meta.env.PROD ? !data.draft : true)
@@ -56,12 +57,22 @@ const latestPosts = allPosts.slice(0, 3);
               </span>
             </h1>
             <p class="hero__tagline">
-              Desarrollador de software. Construyo productos digitales que
-              funcionan bien y se ven bien.
+              System Engineer<br />
+              <span class="hero__tagline-roles">
+                Construyo productos
+                <span aria-hidden="true"> · </span>
+                lidero equipos
+                <span aria-hidden="true"> · </span>
+                comparto lo que aprendo.
+              </span>
             </p>
             <div class="hero__cta" role="group" aria-label="Acciones principales">
               <a href="/proyectos" class="btn btn--primary">Ver proyectos</a>
               <a href="/sobre-mi" class="btn btn--ghost">Sobre mí</a>
+            </div>
+            <div class="hero__social">
+              <span class="hero__social-label" aria-hidden="true">// </span>
+              <SocialLinks />
             </div>
           </div>
         </div>
@@ -151,16 +162,39 @@ const latestPosts = allPosts.slice(0, 3);
 
   .hero__tagline {
     font-size: var(--font-size-lg);
-    color: var(--color-text-muted);
+    color: var(--color-text);
     line-height: var(--line-height-relaxed);
     max-width: 44ch;
     margin-bottom: var(--space-xl);
+    font-weight: 600;
+  }
+
+  .hero__tagline-roles {
+    display: block;
+    font-size: var(--font-size-base);
+    font-weight: 400;
+    color: var(--color-text-muted);
+    margin-top: var(--space-1);
   }
 
   .hero__cta {
     display: flex;
     gap: var(--space-md);
     flex-wrap: wrap;
+    margin-bottom: var(--space-xl);
+  }
+
+  .hero__social {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .hero__social-label {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--color-neon-green);
+    user-select: none;
   }
 
   // ── Botones ──────────────────────────────────────────────────────────────────

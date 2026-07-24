@@ -261,4 +261,15 @@ Cuando ayudes en este proyecto:
 
 ---
 
-_Última actualización: junio 2026._
+## 11. Reglas específicas por área
+
+Los archivos en `.claude/` amplían este documento con convenciones concretas por capa. Claude los carga automáticamente como contexto adicional.
+
+@.claude/rules-components.md
+@.claude/rules-content.md
+@.claude/rules-styles.md
+@.claude/rules-pages.md
+
+---
+
+_Última actualización: julio 2026._
