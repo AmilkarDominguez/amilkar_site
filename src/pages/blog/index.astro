@@ -1,0 +1,67 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Header from '~/components/layout/Header.astro';
+import Footer from '~/components/layout/Footer.astro';
+import PostList from '~/components/posts/PostList.astro';
+
+const posts = await getCollection('posts', ({ data }) =>
+  import.meta.env.PROD ? !data.draft : true
+);
+
+posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout
+  title="Blog"
+  description="Posts de Amilkar Dominguez sobre desarrollo de software, TypeScript, arquitectura y herramientas."
+>
+  <Header />
+
+  <main id="main-content" class="page">
+    <div class="container">
+      <header class="page__header">
+        <p class="page__label" aria-hidden="true">$ ls</p>
+        <h1 class="page__title">blog/</h1>
+        <p class="page__subtitle">
+          {posts.length} post{posts.length !== 1 ? 's' : ''} publicado{posts.length !== 1 ? 's' : ''}.
+        </p>
+      </header>
+
+      <PostList posts={posts} />
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style lang="scss">
+  .page {
+    padding-block: var(--space-3xl);
+  }
+
+  .page__header {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .page__label {
+    font-size: var(--font-size-sm);
+    color: var(--color-neon-green);
+    font-family: var(--font-mono);
+    margin-bottom: var(--space-sm);
+  }
+
+  .page__title {
+    font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-5xl));
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.05;
+    margin-bottom: var(--space-md);
+  }
+
+  .page__subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+  }
+</style>

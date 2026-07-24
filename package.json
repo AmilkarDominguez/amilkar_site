@@ -1,42 +1,23 @@
 {
-  "name": "amilkar-site",
-  "version": "0.0.0",
+  "name": "amilkar_site",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "packageManager": "pnpm@11.7.0",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "docs": "ng build --output-path=docs",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
-  "private": true,
   "dependencies": {
-    "@angular/animations": "^14.2.0",
-    "@angular/common": "^14.2.0",
-    "@angular/compiler": "^14.2.0",
-    "@angular/core": "^14.2.0",
-    "@angular/forms": "^14.2.0",
-    "@angular/platform-browser": "^14.2.0",
-    "@angular/platform-browser-dynamic": "^14.2.0",
-    "@angular/router": "^14.2.0",
-    "ng-particles": "^3.3.2",
-    "rxjs": "~7.5.0",
-    "tslib": "^2.3.0",
-    "tsparticles": "^2.3.2",
-    "tsparticles-engine": "^2.3.2",
-    "zone.js": "~0.11.4"
-  },
-  "devDependencies": {
-    "@angular-devkit/build-angular": "^14.2.3",
-    "@angular/cli": "~14.2.3",
-    "@angular/compiler-cli": "^14.2.0",
-    "@types/jasmine": "~4.0.0",
-    "jasmine-core": "~4.3.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.1.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.0.0",
-    "typescript": "~4.7.2"
+    "@astrojs/mdx": "6.0.3",
+    "@astrojs/rss": "4.0.18",
+    "@astrojs/sitemap": "3.7.3",
+    "astro": "6.4.7",
+    "gsap": "3.15.0",
+    "sass": "1.101.0"
   }
 }

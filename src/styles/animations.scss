@@ -1,0 +1,44 @@
+// @keyframes globales — referenciados por componentes individuales.
+// La lógica de timing y triggers vive en el <style> de cada componente.
+// Los timelines GSAP viven en src/lib/animations/ o en <script> del componente.
+
+// ── Cursor de terminal ────────────────────────────────────────────────────────
+// Usado en TerminalLoader.astro
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+// ── Scanlines / CRT flicker ───────────────────────────────────────────────────
+// Usado en Scanlines.astro — simula el parpadeo de un monitor CRT viejo.
+// Valores extremos intencionalmente sutiles (0.97-1.0) para no marear.
+@keyframes crt-flicker {
+  0%,  19%,  21%, 100% { opacity: 1;    }
+  20%                  { opacity: 0.96; }
+  50%,  52%            { opacity: 0.98; }
+  51%                  { opacity: 0.95; }
+  80%,  82%            { opacity: 0.97; }
+  81%                  { opacity: 0.94; }
+}
+
+// ── Glitch — pseudo-elemento ::before (offset cian) ──────────────────────────
+// Clip-path animado que muestra franjas horizontales del texto en diferente
+// posición, generando el efecto de señal corrupta.
+@keyframes glitch-clip-1 {
+  0%   { clip-path: inset(40% 0 61% 0); transform: translate(-3px, -1px); }
+  20%  { clip-path: inset(92% 0  1% 0); transform: translate( 3px,  1px); }
+  40%  { clip-path: inset(43% 0  1% 0); transform: translate(-3px,  2px); }
+  60%  { clip-path: inset(25% 0 58% 0); transform: translate( 2px, -1px); }
+  80%  { clip-path: inset(54% 0  7% 0); transform: translate(-1px,  2px); }
+  100% { clip-path: inset(58% 0 43% 0); transform: translate( 2px, -2px); }
+}
+
+// ── Glitch — pseudo-elemento ::after (offset magenta) ────────────────────────
+@keyframes glitch-clip-2 {
+  0%   { clip-path: inset(25% 0 58% 0); transform: translate( 3px,  1px); }
+  20%  { clip-path: inset( 1% 0 98% 0); transform: translate(-3px, -1px); }
+  40%  { clip-path: inset(80% 0  5% 0); transform: translate( 2px, -2px); }
+  60%  { clip-path: inset(10% 0 85% 0); transform: translate(-1px,  1px); }
+  80%  { clip-path: inset(70% 0 20% 0); transform: translate( 1px, -2px); }
+  100% { clip-path: inset(33% 0 60% 0); transform: translate(-2px,  2px); }
+}

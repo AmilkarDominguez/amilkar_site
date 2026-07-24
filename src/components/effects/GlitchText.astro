@@ -1,0 +1,81 @@
+---
+type GlitchTag = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'span' | 'p';
+
+interface Props {
+  text: string;
+  tag?: GlitchTag;
+}
+
+const { text, tag: Tag = 'span' } = Astro.props;
+---
+
+<Tag class="glitch" data-text={text}>{text}</Tag>
+
+<style lang="scss">
+  .glitch {
+    position: relative;
+    display: inline-block;
+
+    // Hereda tipografía del padre para no romper headings
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+
+    &::before,
+    &::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+
+      // Mismo rendring que el texto real
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+      letter-spacing: inherit;
+      white-space: nowrap;
+      overflow: hidden;
+
+      // Por defecto: sin animación (solo en hover/focus)
+      animation: none;
+    }
+
+    // Offset cian — desplazado hacia la izquierda
+    &::before {
+      color: var(--color-neon-cyan);
+      left: 2px;
+    }
+
+    // Offset magenta — desplazado hacia la derecha
+    &::after {
+      color: var(--color-neon-green-light);
+      left: -2px;
+    }
+
+    // Activa el glitch solo en interacción para no cansar la vista
+    &:hover,
+    &:focus-within {
+      &::before {
+        animation: glitch-clip-1 0.45s steps(5, end) infinite;
+      }
+
+      &::after {
+        animation: glitch-clip-2 0.45s steps(5, end) infinite;
+        // Desfase de medio ciclo para que los dos pseudo-elementos no se sincronicen
+        animation-delay: 0.225s;
+      }
+    }
+
+    // Sin efectos para quienes prefieren menos movimiento
+    @media (prefers-reduced-motion: reduce) {
+      &::before,
+      &::after {
+        display: none;
+      }
+    }
+  }
+</style>

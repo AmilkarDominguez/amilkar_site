@@ -1,0 +1,47 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProjectCard from '~/components/projects/ProjectCard.astro';
+
+interface Props {
+  projects: CollectionEntry<'projects'>[];
+}
+
+const { projects } = Astro.props;
+---
+
+{
+  projects.length > 0 ? (
+    <ul class="project-grid" role="list">
+      {projects.map((project) => (
+        <li>
+          <ProjectCard project={project} />
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="project-grid__empty">No hay proyectos disponibles todavía.</p>
+  )
+}
+
+<style lang="scss">
+  .project-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .project-grid__empty {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    padding: var(--space-xl) 0;
+  }
+</style>

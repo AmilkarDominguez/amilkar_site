@@ -1,0 +1,249 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Header from '~/components/layout/Header.astro';
+import Footer from '~/components/layout/Footer.astro';
+import ProjectGrid from '~/components/projects/ProjectGrid.astro';
+import PostList from '~/components/posts/PostList.astro';
+import TerminalLoader from '~/components/effects/TerminalLoader.astro';
+import GlitchText from '~/components/effects/GlitchText.astro';
+
+const featuredProjects = await getCollection('projects', ({ data }) =>
+  data.featured && (import.meta.env.PROD ? !data.draft : true)
+);
+featuredProjects.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const allPosts = await getCollection('posts', ({ data }) =>
+  import.meta.env.PROD ? !data.draft : true
+);
+allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const latestPosts = allPosts.slice(0, 3);
+---
+
+<BaseLayout
+  title="Inicio"
+  description="Portafolio digital de Amilkar Dominguez — desarrollador de software."
+>
+  <Fragment slot="head">
+    {/* Sin JS: oculta el terminal y muestra el contenido directamente */}
+    <noscript>
+      <style>
+        #terminal-overlay { display: none !important; }
+        #main-reveal      { opacity: 1 !important; }
+      </style>
+    </noscript>
+  </Fragment>
+
+  {/* Terminal fuera del #main-reveal para que no desaparezca cuando opacity se vuelve 0 */}
+  <TerminalLoader />
+
+  {/* Todo el contenido visible empieza oculto; el script del terminal lo revela */}
+  <div id="main-reveal" style="opacity: 0">
+    <Header />
+
+    <main id="main-content">
+      <!-- ── Hero ── -->
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="container">
+          <div class="hero__inner">
+            <p class="hero__label">
+              <span aria-hidden="true">// </span>Hola, soy
+            </p>
+            <h1 id="hero-title" class="hero__name">
+              <GlitchText text="Amilkar" /><br />
+              <span class="hero__name-accent">
+                <GlitchText text="Dominguez" />
+              </span>
+            </h1>
+            <p class="hero__tagline">
+              Desarrollador de software. Construyo productos digitales que
+              funcionan bien y se ven bien.
+            </p>
+            <div class="hero__cta" role="group" aria-label="Acciones principales">
+              <a href="/proyectos" class="btn btn--primary">Ver proyectos</a>
+              <a href="/sobre-mi" class="btn btn--ghost">Sobre mí</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Proyectos destacados ── -->
+      <section class="section" aria-labelledby="projects-heading">
+        <div class="container">
+          <div class="section__header">
+            <h2 id="projects-heading" class="section__title">
+              <span class="section__prefix" aria-hidden="true">$ ls </span
+              >proyectos/
+            </h2>
+            <a
+              href="/proyectos"
+              class="section__see-all"
+              aria-label="Ver todos los proyectos"
+            >
+              Ver todos →
+            </a>
+          </div>
+
+          <ProjectGrid projects={featuredProjects} />
+        </div>
+      </section>
+
+      <!-- ── Últimos posts ── -->
+      <section class="section" aria-labelledby="posts-heading">
+        <div class="container">
+          <div class="section__header">
+            <h2 id="posts-heading" class="section__title">
+              <span class="section__prefix" aria-hidden="true">$ ls </span>blog/
+            </h2>
+            <a
+              href="/blog"
+              class="section__see-all"
+              aria-label="Ver todos los posts del blog"
+            >
+              Ver todos →
+            </a>
+          </div>
+
+          <PostList posts={latestPosts} />
+        </div>
+      </section>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<style lang="scss">
+  // ── Hero ────────────────────────────────────────────────────────────────────
+
+  .hero {
+    padding-block: var(--space-3xl) var(--space-2xl);
+
+    @media (min-width: 768px) {
+      padding-block: var(--space-3xl);
+    }
+  }
+
+  .hero__inner {
+    max-width: 48rem;
+  }
+
+  .hero__label {
+    font-size: var(--font-size-sm);
+    color: var(--color-neon-green);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-md);
+  }
+
+  .hero__name {
+    font-size: clamp(var(--font-size-4xl), 8vw, 5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: var(--space-lg);
+    color: var(--color-text);
+  }
+
+  .hero__name-accent {
+    color: var(--color-neon-cyan);
+  }
+
+  .hero__tagline {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-relaxed);
+    max-width: 44ch;
+    margin-bottom: var(--space-xl);
+  }
+
+  .hero__cta {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+  }
+
+  // ── Botones ──────────────────────────────────────────────────────────────────
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-3) var(--space-6);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    transition:
+      background-color var(--transition-fast),
+      color var(--transition-fast),
+      border-color var(--transition-fast);
+    letter-spacing: 0.05em;
+
+    &--primary {
+      background-color: var(--color-neon-cyan);
+      color: var(--color-bg);
+      border-color: var(--color-neon-cyan);
+
+      &:hover,
+      &:focus-visible {
+        background-color: transparent;
+        color: var(--color-neon-cyan);
+        text-decoration: none;
+      }
+    }
+
+    &--ghost {
+      background-color: transparent;
+      color: var(--color-text-muted);
+      border-color: var(--color-border);
+
+      &:hover,
+      &:focus-visible {
+        color: var(--color-neon-cyan);
+        border-color: var(--color-neon-cyan);
+        text-decoration: none;
+      }
+    }
+  }
+
+  // ── Sections ─────────────────────────────────────────────────────────────────
+
+  .section {
+    padding-block: var(--space-3xl);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .section__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+  }
+
+  .section__title {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .section__prefix {
+    color: var(--color-neon-green);
+    font-family: var(--font-mono);
+  }
+
+  .section__see-all {
+    font-size: var(--font-size-sm);
+    color: var(--color-neon-cyan);
+    font-family: var(--font-mono);
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+    }
+  }
+</style>

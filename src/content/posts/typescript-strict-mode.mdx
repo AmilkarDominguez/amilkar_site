@@ -1,0 +1,114 @@
+---
+title: 'TypeScript strict mode: las opciones que más importan'
+description: 'noUncheckedIndexedAccess, exactOptionalPropertyTypes y otras flags que evitan bugs silenciosos en runtime. Cuáles habilitar y por qué.'
+pubDate: 2026-06-01
+tags: ['TypeScript', 'calidad', 'tooling']
+draft: false
+---
+
+`strict: true` en tu `tsconfig.json` activa un conjunto de flags de TypeScript que capturan más errores en compile-time. Pero hay opciones fuera de ese conjunto que valen la pena activar por separado.
+
+## Las flags de `strict: true`
+
+`strict: true` es un shorthand para activar estas flags simultáneamente:
+
+```json
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "useUnknownInCatchVariables": true
+  }
+}
+```
+
+La más impactante es `strictNullChecks`. Sin ella, `null` y `undefined` son asignables a cualquier tipo, lo que permite bugs como:
+
+```typescript
+function getUser(id: string): User {
+  return db.find(id); // podría ser undefined, pero TS no lo sabe
+}
+
+const user = getUser('123');
+console.log(user.name); // 💥 TypeError en runtime si no existe
+```
+
+Con `strictNullChecks: true`, TypeScript fuerza a manejar el caso `undefined`:
+
+```typescript
+function getUser(id: string): User | undefined {
+  return db.find(id);
+}
+
+const user = getUser('123');
+// Error TS: object is possibly undefined
+console.log(user?.name ?? 'Usuario desconocido');
+```
+
+## `noUncheckedIndexedAccess`
+
+Esta es la flag que más me gusta y que `strict: true` **no** activa. Cambia el tipo de accesos por índice a arrays y objetos para incluir `undefined`:
+
+```typescript
+// Sin noUncheckedIndexedAccess
+const items = ['a', 'b', 'c'];
+const first: string = items[0]; // OK para TS, pero podría ser undefined
+
+// Con noUncheckedIndexedAccess
+const first: string | undefined = items[0]; // TypeScript te obliga a chequear
+```
+
+Parece molesto al principio. En la práctica, captura bugs reales:
+
+```typescript
+function processFirst(items: string[]): string {
+  // Error TS: Type 'string | undefined' is not assignable to 'string'
+  return items[0].toUpperCase();
+}
+
+// Versión correcta:
+function processFirst(items: string[]): string {
+  const first = items[0];
+  if (first === undefined) throw new Error('Lista vacía');
+  return first.toUpperCase();
+}
+```
+
+## `exactOptionalPropertyTypes`
+
+Diferencia entre una propiedad que no existe y una propiedad cuyo valor es `undefined`:
+
+```typescript
+interface Config {
+  timeout?: number;
+}
+
+// Sin exactOptionalPropertyTypes: ambas son equivalentes para TS
+const a: Config = {};                   // timeout no existe
+const b: Config = { timeout: undefined }; // timeout existe pero es undefined
+
+// Con exactOptionalPropertyTypes: son distintas
+const c: Config = { timeout: undefined }; // Error TS
+```
+
+Es especialmente útil cuando distinguís "no configurado" de "explícitamente vacío" en APIs.
+
+## Mi configuración base
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
+  }
+}
+```
+
+`noImplicitReturns` obliga a que todas las ramas de una función devuelvan un valor. `noFallthroughCasesInSwitch` requiere `break` explícito en cada case. Ambas son ruidosas al principio y te ahorran bugs en producción.

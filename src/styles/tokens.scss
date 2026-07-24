@@ -1,0 +1,93 @@
+// Design tokens — única fuente de verdad para todos los valores de diseño.
+// CSS custom properties para runtime (colores, espaciados, tipografía).
+// SCSS variables ($) para breakpoints (solo compile-time, no usables en var()).
+
+// ─── Breakpoints (SCSS vars — solo para @media en este archivo o imports directos) ───
+$bp-sm: 640px;
+$bp-md: 768px;
+$bp-lg: 1024px;
+$bp-xl: 1280px;
+$bp-2xl: 1536px;
+
+// ─── Custom properties globales ───
+:root {
+  // Colores — paleta cyberpunk (ancla: #45e3b0 mint teal + #182438 navy oscuro)
+  --color-bg: #0c1520;
+  --color-bg-surface: #182438;
+  --color-bg-elevated: #1f2f47;
+  --color-text: #e2eff0;
+  --color-text-muted: #6b8fa3;
+  --color-neon-cyan: #45e3b0;
+  --color-neon-magenta: #e34599;
+  --color-neon-green: #1affd5;
+  --color-neon-green-light: #b4fff1;
+  --color-amber: #e3b045;
+  --color-white: #f2efe7;
+  --color-border: #1e3252;
+  --color-border-subtle: #141f32;
+
+  // Tipografía
+  --font-mono: 'Ubuntu Mono', ui-monospace, 'Courier New', monospace;
+  --font-display: 'Orbitron', var(--font-mono);
+
+  --font-size-xs: 0.75rem; // 12px
+  --font-size-sm: 0.875rem; // 14px
+  --font-size-base: 1rem; // 16px
+  --font-size-lg: 1.125rem; // 18px
+  --font-size-xl: 1.25rem; // 20px
+  --font-size-2xl: 1.5rem; // 24px
+  --font-size-3xl: 1.875rem; // 30px
+  --font-size-4xl: 2.25rem; // 36px
+  --font-size-5xl: 3rem; // 48px
+
+  --line-height-tight: 1.2;
+  --line-height-base: 1.6;
+  --line-height-relaxed: 1.8;
+
+  // Espaciado — escala 4px
+  --space-1: 0.25rem; // 4px
+  --space-2: 0.5rem; // 8px
+  --space-3: 0.75rem; // 12px
+  --space-4: 1rem; // 16px
+  --space-5: 1.25rem; // 20px
+  --space-6: 1.5rem; // 24px
+  --space-8: 2rem; // 32px
+  --space-10: 2.5rem; // 40px
+  --space-12: 3rem; // 48px
+  --space-16: 4rem; // 64px
+  --space-20: 5rem; // 80px
+  --space-24: 6rem; // 96px
+
+  // Aliases semánticos
+  --space-xs: var(--space-2);
+  --space-sm: var(--space-3);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-6);
+  --space-xl: var(--space-8);
+  --space-2xl: var(--space-12);
+  --space-3xl: var(--space-16);
+
+  // Layout
+  --container-max: 72rem; // 1152px
+  --container-prose: 65ch;
+  --header-height: 4rem;
+
+  // Border radius
+  --radius-sm: 0.125rem; // 2px
+  --radius-md: 0.25rem; // 4px
+  --radius-lg: 0.5rem; // 8px
+
+  // Transiciones
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  // Z-index
+  --z-base: 0;
+  --z-elevated: 10;
+  --z-nav: 100;
+  --z-overlay: 200;
+  --z-modal: 300;
+  // Terminal loader: sobre todo, incluido modal. Solo existe durante 3-4 segundos.
+  --z-terminal: 9000;
+}

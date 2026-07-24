@@ -1,0 +1,189 @@
+---
+// Fase 2: layout para páginas de proyecto. Recibe frontmatter tipado de la colección.
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Header from '~/components/layout/Header.astro';
+import Footer from '~/components/layout/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  tags?: string[];
+  stack?: string[];
+  repo?: string;
+  demo?: string;
+}
+
+const {
+  title,
+  description,
+  pubDate,
+  tags = [],
+  stack = [],
+  repo,
+  demo,
+} = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+  <main id="main-content" class="project-layout">
+    <div class="container">
+      <article class="project">
+        <header class="project__header">
+          <div class="project__meta">
+            <time datetime={pubDate.toISOString()}>
+              {pubDate.toLocaleDateString('es-ES', { year: 'numeric', month: 'long' })}
+            </time>
+          </div>
+          <h1 class="project__title">{title}</h1>
+          <p class="project__description">{description}</p>
+
+          <div class="project__actions">
+            {repo && (
+              <a href={repo} class="project__link" target="_blank" rel="noopener noreferrer">
+                ↗ Repositorio
+              </a>
+            )}
+            {demo && (
+              <a href={demo} class="project__link project__link--demo" target="_blank" rel="noopener noreferrer">
+                ↗ Demo en vivo
+              </a>
+            )}
+          </div>
+
+          {stack.length > 0 && (
+            <div class="project__stack">
+              <p class="project__stack-label">Stack:</p>
+              <ul class="project__tags" role="list">
+                {stack.map((tech) => (
+                  <li class="project__tag">{tech}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </header>
+
+        <div class="project__body prose">
+          <slot />
+        </div>
+      </article>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style lang="scss">
+  .project-layout {
+    padding-block: var(--space-3xl);
+  }
+
+  .project__header {
+    max-width: var(--container-prose);
+    margin-bottom: var(--space-2xl);
+    padding-bottom: var(--space-2xl);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .project__meta {
+    font-size: var(--font-size-xs);
+    color: var(--color-neon-green);
+    font-family: var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-md);
+  }
+
+  .project__title {
+    font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-5xl));
+    margin-bottom: var(--space-md);
+    line-height: 1.1;
+  }
+
+  .project__description {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-relaxed);
+    max-width: 55ch;
+    margin-bottom: var(--space-lg);
+  }
+
+  .project__actions {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-lg);
+  }
+
+  .project__link {
+    font-size: var(--font-size-sm);
+    font-family: var(--font-mono);
+    color: var(--color-neon-cyan);
+
+    &--demo {
+      color: var(--color-neon-magenta);
+    }
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+    }
+  }
+
+  .project__stack {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+  }
+
+  .project__stack-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .project__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .project__tag {
+    padding: var(--space-1) var(--space-2);
+    background-color: color-mix(in srgb, var(--color-neon-cyan) 10%, transparent);
+    color: var(--color-neon-cyan);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-family: var(--font-mono);
+  }
+
+  .project__body {
+    max-width: var(--container-prose);
+  }
+
+  .prose {
+    :global(h2) { margin-block: var(--space-2xl) var(--space-lg); }
+    :global(h3) { margin-block: var(--space-xl) var(--space-md); }
+    :global(p)  { margin-bottom: var(--space-md); color: var(--color-text-muted); line-height: var(--line-height-relaxed); }
+    :global(a)  { color: var(--color-neon-cyan); }
+    :global(code) {
+      font-family: var(--font-mono);
+      font-size: 0.9em;
+      padding: 0.1em 0.3em;
+      background-color: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+    }
+    :global(pre) {
+      padding: var(--space-lg);
+      background-color: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow-x: auto;
+      margin-bottom: var(--space-lg);
+    }
+  }
+</style>

@@ -1,0 +1,152 @@
+---
+// Fase 2: layout para posts del blog. Recibe frontmatter tipado de la colección.
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Header from '~/components/layout/Header.astro';
+import Footer from '~/components/layout/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  tags?: string[];
+}
+
+const { title, description, pubDate, updatedDate, tags = [] } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} article={{ pubDate, updatedDate, tags }}>
+  <Header />
+  <main id="main-content" class="post-layout">
+    <div class="container">
+      <article class="post">
+        <header class="post__header">
+          <div class="post__meta">
+            <time datetime={pubDate.toISOString()}>
+              {pubDate.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </time>
+            {updatedDate && (
+              <span class="post__updated">
+                Actualizado: <time datetime={updatedDate.toISOString()}>
+                  {updatedDate.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
+                </time>
+              </span>
+            )}
+          </div>
+          <h1 class="post__title">{title}</h1>
+          {tags.length > 0 && (
+            <ul class="post__tags" role="list" aria-label="Etiquetas">
+              {tags.map((tag) => (
+                <li class="post__tag">{tag}</li>
+              ))}
+            </ul>
+          )}
+        </header>
+        <div class="post__body prose">
+          <slot />
+        </div>
+      </article>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style lang="scss">
+  .post-layout {
+    padding-block: var(--space-3xl);
+  }
+
+  .post__header {
+    max-width: var(--container-prose);
+    margin-bottom: var(--space-2xl);
+  }
+
+  .post__meta {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    font-size: var(--font-size-xs);
+    color: var(--color-neon-green);
+    font-family: var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-md);
+  }
+
+  .post__updated {
+    color: var(--color-text-muted);
+  }
+
+  .post__title {
+    font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-5xl));
+    margin-bottom: var(--space-lg);
+    line-height: 1.1;
+  }
+
+  .post__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .post__tag {
+    padding: var(--space-1) var(--space-2);
+    background-color: color-mix(in srgb, var(--color-neon-cyan) 10%, transparent);
+    color: var(--color-neon-cyan);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-family: var(--font-mono);
+  }
+
+  .post__body {
+    max-width: var(--container-prose);
+  }
+
+  // Prose: estilos base para contenido Markdown renderizado
+  .prose {
+    :global(h2) { margin-block: var(--space-2xl) var(--space-lg); }
+    :global(h3) { margin-block: var(--space-xl) var(--space-md); }
+    :global(p)  { margin-bottom: var(--space-md); color: var(--color-text-muted); line-height: var(--line-height-relaxed); }
+    :global(a)  { color: var(--color-neon-cyan); }
+    :global(code) {
+      font-family: var(--font-mono);
+      font-size: 0.9em;
+      padding: 0.1em 0.3em;
+      background-color: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+    }
+    :global(pre) {
+      padding: var(--space-lg);
+      background-color: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow-x: auto;
+      margin-bottom: var(--space-lg);
+
+      code {
+        background: none;
+        border: none;
+        padding: 0;
+      }
+    }
+    :global(blockquote) {
+      border-left: 3px solid var(--color-neon-cyan);
+      padding-left: var(--space-lg);
+      color: var(--color-text-muted);
+      font-style: italic;
+      margin-block: var(--space-lg);
+    }
+    :global(ul), :global(ol) {
+      padding-left: var(--space-lg);
+      margin-bottom: var(--space-md);
+      color: var(--color-text-muted);
+      line-height: var(--line-height-relaxed);
+    }
+    :global(hr) {
+      border: none;
+      border-top: 1px solid var(--color-border);
+      margin-block: var(--space-2xl);
+    }
+  }
+</style>
