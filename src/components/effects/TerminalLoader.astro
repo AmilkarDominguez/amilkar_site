@@ -1,0 +1,196 @@
+---
+// Solo se usa en la home. El GSAP timeline vive en el <script> de abajo.
+// El overlay es position:fixed → CLS = 0 (no afecta el flujo del documento).
+// prefers-reduced-motion: el script lo detecta y elimina el overlay de inmediato.
+---
+
+<div id="terminal-overlay" aria-hidden="true" aria-live="off">
+  <div class="t-window">
+    <div class="t-topbar">
+      <span class="t-dot t-dot--red"></span>
+      <span class="t-dot t-dot--yellow"></span>
+      <span class="t-dot t-dot--green"></span>
+      <span class="t-title">amilkar@portfolio ~ bash</span>
+    </div>
+
+    <div class="t-body">
+      <div id="terminal-lines"></div>
+      <span class="t-cursor" aria-hidden="true">█</span>
+    </div>
+
+    <p class="t-hint">Presiona cualquier tecla para saltar</p>
+  </div>
+</div>
+
+<script>
+  import gsap from 'gsap';
+
+  type GSAPTimeline = ReturnType<typeof gsap.timeline>;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const overlay = document.getElementById('terminal-overlay');
+  const mainReveal = document.getElementById('main-reveal');
+
+  function revealContent(): void {
+    if (overlay) overlay.style.display = 'none';
+    if (mainReveal) {
+      mainReveal.style.transition = 'opacity 0.5s ease';
+      mainReveal.style.opacity = '1';
+    }
+  }
+
+  if (prefersReduced || !overlay) {
+    revealContent();
+  } else {
+    const COMMANDS = [
+      '> initializing portfolio...',
+      '> loading projects [████████░░░░] 66%',
+      '> decrypting assets...',
+      '> boot sequence complete.',
+      '> welcome.',
+    ] as const;
+
+    const linesContainer = document.getElementById('terminal-lines');
+    let tl: GSAPTimeline | null = null;
+    let skipCalled = false;
+
+    function doSkip(): void {
+      if (skipCalled) return;
+      skipCalled = true;
+      if (tl) { tl.kill(); }
+      // Muestra todas las líneas instantáneamente al saltar
+      if (linesContainer) {
+        linesContainer.innerHTML = COMMANDS.map(
+          (cmd) => `<div class="t-line">${cmd}</div>`
+        ).join('');
+      }
+      gsap.to(overlay, { opacity: 0, duration: 0.25, onComplete: revealContent });
+    }
+
+    document.addEventListener('keydown', doSkip, { once: true });
+    document.addEventListener('click', doSkip, { once: true });
+
+    tl = gsap.timeline({
+      onComplete() {
+        document.removeEventListener('keydown', doSkip);
+        document.removeEventListener('click', doSkip);
+        gsap.to(overlay, {
+          opacity: 0,
+          duration: 0.5,
+          delay: 0.5,
+          onComplete: revealContent,
+        });
+      },
+    });
+
+    if (linesContainer) {
+      for (const cmd of COMMANDS) {
+        const lineEl = document.createElement('div');
+        lineEl.className = 't-line';
+        linesContainer.appendChild(lineEl);
+
+        const counter = { n: 0 };
+        tl
+          .to(counter, {
+            n: cmd.length,
+            // ~30ms por carácter para que no sea ni lento ni frenético
+            duration: cmd.length * 0.03,
+            ease: 'none',
+            onUpdate() {
+              lineEl.textContent = cmd.slice(0, Math.round(counter.n));
+            },
+          })
+          // Pausa breve entre líneas para simular "pensar"
+          .to({}, { duration: 0.2 });
+      }
+    }
+  }
+</script>
+
+<style lang="scss">
+  #terminal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-terminal);
+    background-color: var(--color-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-md);
+  }
+
+  // ── Ventana de terminal ─────────────────────────────────────────────────────
+
+  .t-window {
+    width: 100%;
+    max-width: 640px;
+    border: 1px solid var(--color-neon-green);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-surface);
+    // Glow sutil característico del fósforo verde
+    box-shadow:
+      0 0 20px rgba(57, 255, 20, 0.15),
+      0 0 60px rgba(57, 255, 20, 0.05);
+    overflow: hidden;
+  }
+
+  .t-topbar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--color-bg-elevated);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .t-dot {
+    display: inline-block;
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 50%;
+
+    &--red    { background-color: #ff5f57; }
+    &--yellow { background-color: #febc2e; }
+    &--green  { background-color: #28c840; }
+  }
+
+  .t-title {
+    margin-left: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  // ── Contenido escrito ────────────────────────────────────────────────────────
+
+  .t-body {
+    padding: var(--space-6) var(--space-6) var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-relaxed);
+    color: var(--color-neon-green);
+    min-height: 10rem;
+  }
+
+  // Inyectado dinámicamente por el script — .t-line
+  :global(.t-line) {
+    display: block;
+  }
+
+  .t-cursor {
+    display: inline-block;
+    animation: cursor-blink 0.8s step-end infinite;
+    color: var(--color-neon-green);
+    line-height: 1;
+  }
+
+  .t-hint {
+    padding: var(--space-2) var(--space-6) var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-align: right;
+    border-top: 1px solid var(--color-border);
+  }
+</style>

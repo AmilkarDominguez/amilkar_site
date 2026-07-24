@@ -1,0 +1,80 @@
+---
+const currentYear = new Date().getFullYear();
+
+const socialLinks = [
+  {
+    href: 'https://github.com/amilkardominguez',
+    label: 'GitHub',
+  },
+  {
+    href: 'https://linkedin.com/in/amilkardominguez',
+    label: 'LinkedIn',
+  },
+] as const;
+---
+
+<footer class="site-footer">
+  <div class="footer__inner container">
+    <p class="footer__copy">
+      © {currentYear} Amilkar Dominguez
+    </p>
+
+    <ul class="footer__links" role="list">
+      {socialLinks.map(({ href, label }) => (
+        <li>
+          <a
+            href={href}
+            class="footer__link"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${label} (abre en nueva pestaña)`}
+          >
+            {label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</footer>
+
+<style lang="scss">
+  .site-footer {
+    border-top: 1px solid var(--color-border);
+    padding-block: var(--space-lg);
+    margin-top: var(--space-3xl);
+  }
+
+  .footer__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+  }
+
+  .footer__copy {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .footer__links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .footer__link {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    transition: color var(--transition-fast);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-neon-cyan);
+      text-decoration: none;
+    }
+  }
+</style>

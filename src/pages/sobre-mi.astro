@@ -1,0 +1,59 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Header from '~/components/layout/Header.astro';
+import Footer from '~/components/layout/Footer.astro';
+---
+
+<BaseLayout
+  title="Sobre mí"
+  description="Amilkar Dominguez — desarrollador de software."
+>
+  <Header />
+  <main id="main-content" class="about">
+    <div class="container">
+      <h1 class="about__title">
+        <span class="about__title-prefix" aria-hidden="true">$ whoami</span>
+      </h1>
+
+      <div class="about__content">
+        <p>
+          Soy Amilkar Dominguez, desarrollador de software con foco en
+          construcción de productos web escalables y bien tipados.
+        </p>
+        <p>
+          Esta sección se expandirá con más detalle en fases posteriores.
+        </p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style lang="scss">
+  .about {
+    padding-block: var(--space-3xl);
+  }
+
+  .about__title {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--space-xl);
+    color: var(--color-neon-green);
+  }
+
+  .about__title-prefix {
+    font-family: var(--font-mono);
+  }
+
+  .about__content {
+    max-width: var(--container-prose);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+
+    p {
+      font-size: var(--font-size-lg);
+      color: var(--color-text-muted);
+      line-height: var(--line-height-relaxed);
+    }
+  }
+</style>

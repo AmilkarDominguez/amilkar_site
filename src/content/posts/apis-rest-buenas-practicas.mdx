@@ -1,0 +1,100 @@
+---
+title: 'APIs REST: las prácticas que más me importan'
+description: 'Versionado, manejo de errores estructurados, idempotencia y contratos tipados. Lo que aprendí construyendo APIs que viven años en producción.'
+pubDate: 2026-05-20
+updatedDate: 2026-06-05
+tags: ['backend', 'API', 'TypeScript', 'arquitectura']
+draft: false
+---
+
+Después de escribir y mantener varias APIs REST en producción durante años, tengo opiniones fuertes sobre lo que hace que una API sea buena. No en el sentido de "REST puro según Roy Fielding", sino en el sentido de "no vas a maldecir esta API a las 3am".
+
+## Errores estructurados y consistentes
+
+El error más común que veo en APIs es devolver diferentes estructuras según el tipo de error. Que a veces sea `{ message: 'Error' }`, a veces `{ error: { code: 'X' } }` y a veces HTML de Express por un crash no manejado.
+
+La solución es definir un tipo de error de una vez y usarlo siempre:
+
+```typescript
+interface ApiError {
+  code: string;       // legible por máquinas: 'VALIDATION_ERROR', 'NOT_FOUND'
+  message: string;    // legible por humanos
+  details?: unknown;  // contexto adicional, opcional
+  requestId: string;  // para correlacionar con logs
+}
+
+function notFound(resource: string, requestId: string): ApiError {
+  return {
+    code: 'NOT_FOUND',
+    message: `${resource} no encontrado`,
+    requestId,
+  };
+}
+```
+
+Con esta estructura, el cliente sabe exactamente cómo manejar cualquier error, independientemente de su origen.
+
+## Idempotencia en mutaciones
+
+Los endpoints `POST` que crean recursos deben aceptar un `Idempotency-Key` en el header. Esto permite al cliente reintentar una petición fallida sin crear duplicados:
+
+```typescript
+app.post('/payments', async (req, reply) => {
+  const idempotencyKey = req.headers['idempotency-key'];
+  
+  if (idempotencyKey) {
+    const cached = await redis.get(`idem:${idempotencyKey}`);
+    if (cached) {
+      return reply.send(JSON.parse(cached)); // misma respuesta que la primera vez
+    }
+  }
+
+  const payment = await createPayment(req.body);
+  
+  if (idempotencyKey) {
+    await redis.setex(`idem:${idempotencyKey}`, 86400, JSON.stringify(payment));
+  }
+
+  return reply.status(201).send(payment);
+});
+```
+
+Stripe, Stripe y Stripe de nuevo: la primera vez que vi este patrón bien implementado fue en su API. Vale la pena copiarlo.
+
+## Versionado desde el día uno
+
+No esperes a necesitar un breaking change para versionar tu API. Empezá con `/v1/` desde el primer endpoint:
+
+```
+GET /v1/users/:id
+POST /v1/payments
+```
+
+Cuando llegue el momento de cambiar la estructura de respuesta, podés lanzar `/v2/` en paralelo y dar a los clientes tiempo para migrar, sin romper los que ya están en producción.
+
+## Contratos tipados entre cliente y servidor
+
+Si el cliente y el servidor están en el mismo repo (o en repos que podés coordinar), compartir los tipos TypeScript elimina una clase entera de bugs:
+
+```typescript
+// packages/api-types/src/users.ts
+export interface CreateUserRequest {
+  email: string;
+  name: string;
+  role: 'admin' | 'user';
+}
+
+export interface CreateUserResponse {
+  id: string;
+  email: string;
+  createdAt: string; // ISO 8601
+}
+```
+
+El servidor implementa `CreateUserResponse` y el cliente lo consume. Cuando cambia la estructura, el compilador te dice exactamente dónde está roto el cliente.
+
+## Lo que no recomiendo
+
+**No uses Swagger/OpenAPI como fuente de verdad si tenés TypeScript.** OpenAPI es útil para documentación y para clientes en otros lenguajes, pero si el servidor es TypeScript, los tipos son tu fuente de verdad. El YAML de OpenAPI es una derivación, no al revés.
+
+**No pongas lógica de negocio en middlewares.** Los middlewares son para crosscutting concerns: auth, logging, rate limiting. La lógica de negocio pertenece a la capa de servicio, donde se puede testear sin montar el servidor HTTP.

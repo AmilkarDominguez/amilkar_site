@@ -1,0 +1,38 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import PostCard from '~/components/posts/PostCard.astro';
+
+interface Props {
+  posts: CollectionEntry<'posts'>[];
+}
+
+const { posts } = Astro.props;
+---
+
+{
+  posts.length > 0 ? (
+    <ul class="post-list" role="list">
+      {posts.map((post) => (
+        <li>
+          <PostCard post={post} />
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="post-list__empty">No hay posts publicados todavía.</p>
+  )
+}
+
+<style lang="scss">
+  .post-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-list__empty {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    padding: var(--space-xl) 0;
+  }
+</style>

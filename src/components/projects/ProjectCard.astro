@@ -1,0 +1,162 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import TagBadge from '~/components/posts/TagBadge.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { data } = project;
+---
+
+<article class="project-card">
+  <header class="project-card__header">
+    <h3 class="project-card__title">
+      <a href={`/proyectos/${project.id}`}>{data.title}</a>
+    </h3>
+  </header>
+
+  <p class="project-card__description">{data.description}</p>
+
+  <footer class="project-card__footer">
+    <ul class="project-card__stack" role="list" aria-label="Tecnologías">
+      {data.stack.map((tech) => (
+        <li>
+          <TagBadge tag={tech} />
+        </li>
+      ))}
+    </ul>
+
+    {(data.repo ?? data.demo) && (
+      <div class="project-card__links" aria-label="Enlaces del proyecto">
+        {data.repo && (
+          <a
+            href={data.repo}
+            class="project-card__link"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Repositorio de ${data.title} (abre en nueva pestaña)`}
+          >
+            ↗ Repo
+          </a>
+        )}
+        {data.demo && (
+          <a
+            href={data.demo}
+            class="project-card__link project-card__link--demo"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Demo de ${data.title} (abre en nueva pestaña)`}
+          >
+            ↗ Demo
+          </a>
+        )}
+      </div>
+    )}
+  </footer>
+</article>
+
+<style lang="scss">
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: var(--space-lg);
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    transition:
+      border-color var(--transition-base),
+      transform var(--transition-base);
+
+    &:hover {
+      border-color: var(--color-neon-cyan);
+      transform: translateY(-2px);
+    }
+  }
+
+  .project-card__header {
+    margin-bottom: var(--space-sm);
+  }
+
+  .project-card__title {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    line-height: var(--line-height-tight);
+
+    a {
+      color: var(--color-text);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+
+      // Expand del link a toda la card (accesibilidad)
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+      }
+
+      &:hover,
+      &:focus-visible {
+        color: var(--color-neon-cyan);
+        text-decoration: none;
+      }
+    }
+  }
+
+  .project-card__description {
+    flex: 1;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: var(--space-md);
+  }
+
+  .project-card__footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    margin-top: auto;
+  }
+
+  .project-card__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .project-card__links {
+    display: flex;
+    gap: var(--space-md);
+    flex-shrink: 0;
+    // Sobre el pseudo-elemento ::after del link del título
+    position: relative;
+    z-index: 1;
+  }
+
+  .project-card__link {
+    font-size: var(--font-size-xs);
+    font-family: var(--font-mono);
+    color: var(--color-neon-cyan);
+    text-decoration: none;
+    transition: opacity var(--transition-fast);
+
+    &--demo {
+      color: var(--color-neon-magenta);
+    }
+
+    &:hover,
+    &:focus-visible {
+      opacity: 0.8;
+      text-decoration: underline;
+    }
+  }
+
+  // Necesario para que el ::after del link se expanda correctamente
+  .project-card {
+    position: relative;
+  }
+</style>

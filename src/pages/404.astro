@@ -1,0 +1,155 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Header from '~/components/layout/Header.astro';
+import Footer from '~/components/layout/Footer.astro';
+import GlitchText from '~/components/effects/GlitchText.astro';
+---
+
+<BaseLayout
+  title="404"
+  description="La página que buscás no existe en este universo."
+>
+  <Header />
+
+  <main id="main-content" class="not-found">
+    <div class="container">
+      <div class="not-found__inner">
+
+        <div class="not-found__terminal" aria-hidden="true">
+          <span class="not-found__prompt">SYSTEM ERROR</span>
+          <span class="not-found__separator"> :: </span>
+          <span class="not-found__code">SIGNAL_LOST</span>
+        </div>
+
+        <h1 class="not-found__heading">
+          <GlitchText text="404" />
+        </h1>
+
+        <p class="not-found__message">
+          La ruta que solicitaste no existe en el universo conocido.
+        </p>
+
+        <div class="not-found__log" aria-label="Log de error">
+          <p><span class="not-found__log-prefix">&gt; </span>scanning route table... <span class="not-found__log-fail">[FAILED]</span></p>
+          <p><span class="not-found__log-prefix">&gt; </span>fallback lookup...         <span class="not-found__log-fail">[NOT_FOUND]</span></p>
+          <p><span class="not-found__log-prefix">&gt; </span>initiating return sequence...<span class="not-found__log-ok"> [OK]</span></p>
+        </div>
+
+        <a href="/" class="not-found__cta">
+          <span aria-hidden="true">← </span>Volver al inicio
+        </a>
+
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style lang="scss">
+  .not-found {
+    display: flex;
+    align-items: center;
+    min-height: calc(100svh - 4rem);
+    padding-block: var(--space-3xl);
+  }
+
+  .not-found__inner {
+    max-width: 42rem;
+  }
+
+  // ── Cabecera tipo sistema ───────────────────────────────────────────────────
+
+  .not-found__terminal {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-md);
+  }
+
+  .not-found__prompt {
+    color: var(--color-neon-magenta);
+  }
+
+  .not-found__separator {
+    color: var(--color-text-muted);
+  }
+
+  .not-found__code {
+    color: var(--color-amber);
+  }
+
+  // ── Número grande de error ──────────────────────────────────────────────────
+
+  .not-found__heading {
+    font-size: clamp(5rem, 20vw, 10rem);
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    color: var(--color-neon-cyan);
+    margin-bottom: var(--space-lg);
+  }
+
+  // ── Mensaje ─────────────────────────────────────────────────────────────────
+
+  .not-found__message {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: var(--space-xl);
+  }
+
+  // ── Log de terminal ──────────────────────────────────────────────────────────
+
+  .not-found__log {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: var(--space-2xl);
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .not-found__log-prefix {
+    color: var(--color-neon-green);
+  }
+
+  .not-found__log-fail {
+    color: var(--color-neon-magenta);
+  }
+
+  .not-found__log-ok {
+    color: var(--color-neon-green);
+  }
+
+  // ── CTA ─────────────────────────────────────────────────────────────────────
+
+  .not-found__cta {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-3) var(--space-6);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-bg);
+    background-color: var(--color-neon-cyan);
+    border: 1px solid var(--color-neon-cyan);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition:
+      background-color var(--transition-fast),
+      color var(--transition-fast);
+
+    &:hover,
+    &:focus-visible {
+      background-color: transparent;
+      color: var(--color-neon-cyan);
+      text-decoration: none;
+    }
+  }
+</style>
