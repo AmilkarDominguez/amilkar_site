@@ -23,7 +23,7 @@ Portafolio digital personal de Amilkar Dominguez. Reemplaza el sitio actual (`am
 | Framework | **Astro 5** | Content collections nativas, zero JS por defecto, islas para interactividad puntual, agnóstico de UI framework. |
 | Lenguaje | **TypeScript** (strict) | Tipado en componentes, en frontmatter de markdown vía Zod, y en utilidades. |
 | Estilos | **CSS Modules** + **Sass (SCSS)** + variables CSS nativas | Scoping automático por componente, sin runtime, control total del diseño. **Sin Tailwind**. |
-| Animaciones | **GSAP** (gratuito desde 2024) para timelines complejos. **CSS animations** puras para efectos simples (glitch, scanlines). | GSAP para la terminal y secuencias coreografiadas; CSS para microinteracciones. |
+| Animaciones | **GSAP** (gratuito desde 2024) para timelines complejos. **CSS animations** puras para efectos simples (glitch, scanlines). **Three.js**, acotado al fondo 3D global (ver `.claude/rules-threejs.md`). | GSAP para la terminal y secuencias coreografiadas; CSS para microinteracciones; Three.js solo donde CSS/GSAP no alcanzan (profundidad 3D real). |
 | Markdown | **MDX** vía `@astrojs/mdx` | Permite embeber componentes Astro/JS dentro de los posts (demos, callouts). |
 | Syntax highlighting | **Shiki** (integrado en Astro) | Calidad de VSCode, sin runtime JS en el cliente. |
 | Gestor de paquetes | **pnpm** | Resolución estricta, evita dependencias fantasma, más rápido. |
@@ -39,6 +39,7 @@ No usar: Tailwind, shadcn, Material UI, Bootstrap, DaisyUI, Chakra, ni ningún k
 - `motion` (antes Motion One): alternativa ligera a GSAP (~5kb) para casos simples.
 - `xterm.js`: solo si la terminal animada necesita comportamiento real de terminal (input interactivo). Para una animación visual de "tipeo" basta JS vanilla.
 - `lenis` o similar para scroll suave: aceptable, pero evaluar si CSS `scroll-behavior` alcanza.
+- `three`: excepción deliberada a la disciplina de dependencias — se usa **solo** para el fondo animado global (`ThreeBackground.astro`). No agregar escenas/canvases nuevos sin seguir `.claude/rules-threejs.md` (carga diferida, dispose, presupuesto de performance).
 
 ---
 
@@ -79,6 +80,7 @@ No usar: Tailwind, shadcn, Material UI, Bootstrap, DaisyUI, Chakra, ni ningún k
 │   │   └── global.scss          # Estilos base aplicados a todo el sitio
 │   ├── lib/
 │   │   ├── animations/          # Wrappers de GSAP por componente
+│   │   ├── three/               # Escenas Three.js (ver .claude/rules-threejs.md)
 │   │   └── utils/               # Helpers puros (formatDate, slugify, etc.)
 │   └── env.d.ts
 ├── astro.config.mjs
@@ -143,6 +145,7 @@ No usar: Tailwind, shadcn, Material UI, Bootstrap, DaisyUI, Chakra, ni ningún k
 3. **Scanlines**: overlay sutil con gradiente repetido fijo en viewport.
 4. **CRT flicker**: animación de `opacity` muy sutil (0.97 → 1) en loops largos.
 5. **Cursor custom**: opcional, en forma de bloque mono.
+6. **Fondo 3D global** (`ThreeBackground.astro`): campo de partículas Three.js, fijo detrás de todo el contenido, en todas las páginas. Ver `.claude/rules-threejs.md` para las reglas de performance/a11y no negociables.
 
 Evitar exceso: el efecto cyberpunk debe enmarcar, no entorpecer la lectura de los posts.
 
@@ -269,6 +272,7 @@ Los archivos en `.claude/` amplían este documento con convenciones concretas po
 @.claude/rules-content.md
 @.claude/rules-styles.md
 @.claude/rules-pages.md
+@.claude/rules-threejs.md
 
 ---
 

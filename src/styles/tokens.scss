@@ -83,6 +83,7 @@ $bp-2xl: 1536px;
   --transition-slow: 400ms ease;
 
   // Z-index
+  --z-behind: -1;
   --z-base: 0;
   --z-elevated: 10;
   --z-nav: 100;

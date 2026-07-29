@@ -2,6 +2,7 @@
 import '~/styles/global.scss';
 import SEO from '~/components/SEO.astro';
 import Scanlines from '~/components/effects/Scanlines.astro';
+import ThreeBackground from '~/components/effects/ThreeBackground.astro';
 
 interface Article {
   pubDate: Date;
@@ -60,6 +61,7 @@ const fullTitle =
     <slot name="head" />
   </head>
   <body>
+    <ThreeBackground />
     <Scanlines />
     <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 

@@ -49,9 +49,11 @@ Todos los componentes de `src/components/` y `src/layouts/` **importan indirecta
 
 ### Z-index
 ```css
---z-base: 0    --z-elevated: 10    --z-nav: 100
+--z-behind: -1  --z-base: 0    --z-elevated: 10    --z-nav: 100
 --z-overlay: 200    --z-modal: 300    --z-terminal: 9000
 ```
+
+`--z-behind` es para capas decorativas fijas que deben quedar detrás de todo el contenido normal (ej. el fondo Three.js) — ver `.claude/rules-threejs.md`.
 
 ## Reglas de escritura de estilos
 
