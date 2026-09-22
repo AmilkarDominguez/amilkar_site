@@ -1,6 +1,7 @@
 ---
 import '~/styles/global.scss';
 import SEO from '~/components/SEO.astro';
+import Analytics from '~/components/Analytics.astro';
 import Scanlines from '~/components/effects/Scanlines.astro';
 import ThreeBackground from '~/components/effects/ThreeBackground.astro';
 
@@ -37,6 +38,8 @@ const fullTitle =
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+
+    <Analytics />
 
     <!-- Fuente principal — preload para evitar FOUT en la primera carga -->
     <link

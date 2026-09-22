@@ -1,0 +1,26 @@
+---
+interface Props {
+  id?: string;
+}
+
+// PUBLIC_ prefix requerido por Astro/Vite para exponer la env var al cliente.
+const { id = import.meta.env.PUBLIC_GA_MEASUREMENT_ID } = Astro.props;
+
+// Solo se carga en build de producción y si hay un Measurement ID configurado,
+// para no contaminar las métricas reales con tráfico de `pnpm dev`.
+const shouldRender = import.meta.env.PROD && Boolean(id);
+---
+
+{shouldRender && (
+  <>
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${id}`}></script>
+    <script is:inline define:vars={{ id }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(...args) {
+        window.dataLayer.push(args);
+      }
+      gtag('js', new Date());
+      gtag('config', id);
+    </script>
+  </>
+)}
